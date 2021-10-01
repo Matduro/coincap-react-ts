@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { fetchCoinCap } from "./API";
 // Components
 
@@ -6,20 +6,26 @@ import { fetchCoinCap } from "./API";
 import { ICoinData } from "./API";
 
 const App = () => {
-  const [cryptoData, setCryptoData] = useState<ICoinData[]>([]);
+  const [cryptoData, setCryptoData] = useState<ICoinData[] | void>([]);
 
   const getAPIData = async () => {
     //implement error handling
-    const newAPIData = await fetchCoinCap();
+    console.log("Hello from the top of the getAPIData function");
+
+    const newAPIData = await fetchCoinCap().catch((e) =>
+      console.log("Error in newAPIData: ", e)
+    );
     console.log("newAPIData", newAPIData);
     setCryptoData(newAPIData);
   };
 
-  useEffect(() => {
-    const testing = getAPIData();
-  }, []);
+  getAPIData();
 
-  return <div className="coinApp">The DATA: {cryptoData}</div>;
+  return (
+    <div className="coinApp">
+      The DATA: {cryptoData ? cryptoData : "You need to load the data"}
+    </div>
+  );
 };
 
 export default App;
